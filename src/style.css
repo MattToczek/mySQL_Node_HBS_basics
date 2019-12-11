@@ -1,0 +1,8 @@
+table {
+    width: 20vw;
+    border: 2px solid black;
+    background-color: lightgray;
+}
+body{
+    background-color: tomato;
+}
