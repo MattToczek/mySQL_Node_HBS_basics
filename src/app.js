@@ -16,7 +16,7 @@ const db = mysql.createConnection({         // info in 'session' tab
     password: 'password',
     port: 3306,             //mySQL port
     database: 'users_db'
-})
+});
 
 db.connect((err) => {
     if(err) {
@@ -32,20 +32,23 @@ app.get('/', (req, res) => {
         if (err){
             console.log("error in query while retreving table");  
         } else{
-            console.log(result);
-            let table = "";
+            // console.log(result);
+            // let table = "";
 
-            for (let i = 0; i < result.length; i++) {                    // returns 2x rows per user that is returned from database
+            // for (let i = 0; i < result.length; i++) {                    // returns 2x rows per user that is returned from database
 
-                table += `<tr><td>Name:<td><td>${result[i].user_name}</td></tr>`;
-                table += `<tr><td>Email:<td><td>${result[i].email}</td></tr>`;
+            //     table += `<tr><td>Name:<td><td>${result[i].user_name}</td></tr>`;
+            //     table += `<tr><td>Email:<td><td>${result[i].email}</td></tr>`;
                 
-            }
+            // }
 
-            table= `<table>${table}</table>`            //completes table by wrapping it in table tags
+
+
+            // table= `<table>${table}</table>`            //completes table by wrapping it in table tags
             
             res.render('index', {                       // passes complete table in HTML back to handlebars (index.hbs)
-                table: table
+                // table: table
+                data:result
             })  
         }
     })
@@ -67,7 +70,7 @@ app.post('/register', (req, res) => {
 
     let sqlEmailCheck = 'SELECT email FROM users WHERE email = ?'           // looks to see if an email exists that = an exiting email
 
-    let query1 = db.query(sqlEmailCheck, email, (err, result) => {          // returns array of result
+    db.query(sqlEmailCheck, email, (err, result) => {          // returns array of result
         if(err){
             console.log("Error code: " + err);
         } else {
@@ -87,13 +90,36 @@ app.post('/register', (req, res) => {
         }
     });
 
-
+    
 
 
     // res.render('register', {                    // passes thorough the info from user onput via POST
     //     data: [name, email, password]
     // })
-})
+});
+
+
+
+app.post('/edit/:id', (req, res) => {
+    const userId = req.params.id;
+    const method = req.body._method;
+    const newName = req.body.editName;
+
+    let sql = 'UPDATE users SET user_name = ? WHERE id = ?'
+    let userUpdate = [newName, userId]
+    if(method == 'PUT'){
+        db.query(sql, userUpdate, (err, result)=>{
+            if(err){
+                console.log('There is an error in your query ' + err);
+                
+            } else{
+                res.send('<h1>Username updated!</h1>')
+            }
+        })
+    }
+
+    // res.send('edit')
+});
 
 app.listen(3001, ()=> {
     console.log("Server is running");

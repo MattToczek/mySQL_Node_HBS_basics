@@ -9,7 +9,29 @@
 </head>
 <body>
     <h1>All Users:</h1>
-    {{{table}}}
+    <table>
+    {{#each data}}
+        <tr>
+            <td>
+                Name: {{this.user_name}}
+            </td>
+            <td>
+                Email: {{this.email}}
+            </td>
+            <td>
+                <form action="/edit/{{this.id}}" method="POST">
+                    <input type="text" name="editName" placeholder="Change your name" />
+                    <input type="hidden" name="_method" value="PUT" />
+                    <button type="submit">Change Name!</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+    </table>
+    {{!-- {{{table}}} --}}
+
+    
+    
 
     <form action="/register" method="POST">
         <input type="text" name="theUserName" placeholder="name" /> <br/>
